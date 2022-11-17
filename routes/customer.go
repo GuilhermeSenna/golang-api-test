@@ -6,16 +6,22 @@ import(
 )
 
 
-func CustomerRoute(router *gin.Engine) {
-	// Returns an array of up to 50 customers
-	router.GET("/customers", controller.GetCustomers)
+func Routes(router *gin.Engine) {
 
-	// Returns a specific customer
-	router.GET("/customers/:id", controller.GetCustomer)
+	customersRoutes := router.Group("/customers")
+	{
+		// Returns an array of up to 50 customers
+		customersRoutes.GET("/", controller.GetCustomers)
 
-	// Creates a new customer
-	router.POST("/customers", controller.CreateCustomer)
+		// Returns a specific customer
+		customersRoutes.GET("/:id", controller.GetCustomer)
 
-	// Updates a customer
-	router.PUT("/customers/:id", controller.UpdateCustomer)
+		// Creates a new customer
+		customersRoutes.POST("/", controller.CreateCustomer)
+
+		// Updates a customer
+		customersRoutes.PUT("/:id", controller.UpdateCustomer)
+	}
+
+
 }
