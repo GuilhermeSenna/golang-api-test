@@ -2,9 +2,9 @@ package models
 
 import "gorm.io/gorm"
 
-type User struct {
+type Customers struct {
 	gorm.Model
-	Id int `json:"id" gorm:"primary_key"`
+	Id int `json:"ID" gorm:"primary_key"`
 	First string `json:"first"`
 	Last string `json:"last"`
 	Email string `json:"email"`
