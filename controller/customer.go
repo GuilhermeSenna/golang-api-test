@@ -30,7 +30,7 @@
  }
 
  func CreateCustomer(c *gin.Context){
-	// Get customer parametrs
+	// Get customer parameters
 	var customer models.Customers
 	decoder := json.NewDecoder(c.Request.Body)
 	decoder.Decode(&customer)
@@ -38,8 +38,8 @@
 	// Hash password
 	hashPassword, _ := utils.HashPassword(customer.Password)
 	customerFormatted := models.Customers{
-		First:     customer.First,
-		Last:      customer.Last,
+		FirstName:     customer.FirstName,
+		LastName:      customer.LastName,
 		Email:     customer.Email,
 		Password:  hashPassword,
 	}
@@ -50,8 +50,7 @@
  }
 
  func UpdateCustomer(c *gin.Context){
-
-	// Get customer parametrs
+	// Get customer parameters
 	var customer models.Customers
 	decoder := json.NewDecoder(c.Request.Body)
 	decoder.Decode(&customer)
@@ -59,13 +58,14 @@
 	// Hash password
 	hashPassword, _ := utils.HashPassword(customer.Password)
 	customerFormatted := models.Customers{
-		First:     customer.First,
-		Last:      customer.Last,
+		FirstName:     customer.FirstName,
+		LastName:      customer.LastName,
 		Email:     customer.Email,
 		Password:  hashPassword,
 	}
 
-	// Add to database
-	config.DB.Create(&customerFormatted)
-	c.JSON(200, customerFormatted)
+	// Update customer
+	config.DB.Where("id = ?", c.Param("id")).Updates(&customerFormatted)
+
+	c.JSON(200, &customerFormatted)
  }

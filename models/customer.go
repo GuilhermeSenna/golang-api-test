@@ -6,9 +6,8 @@ import (
 
 type Customers struct {
 	gorm.Model
-	Id int `json:"ID" gorm:"primary_key"`
-	First string `json:"first"`
-	Last string `json:"last"`
+	FirstName string `json:"firstname"`
+	LastName string `json:"lastname"`
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
