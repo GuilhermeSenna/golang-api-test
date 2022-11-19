@@ -7,9 +7,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=golang-test
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
   server:
     build:
       context: .
@@ -20,6 +20,6 @@ services:
     networks:
       - default
     ports:
-      - "8080:8080"
+      - "${API_PORT}:${API_PORT}"
 volumes:
   data:
