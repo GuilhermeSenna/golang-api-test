@@ -25,5 +25,5 @@ func main() {
 	router := gin.New()
 	config.Connect()
 	routes.Routes(router)
-	router.Run("127.0.0.1:" + port)
+	router.Run(":" + port)
 }

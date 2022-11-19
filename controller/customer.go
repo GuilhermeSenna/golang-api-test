@@ -1,11 +1,13 @@
  package controller 
 
  import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/guilhermeSenna/golang-api-test/config"
 	"github.com/guilhermeSenna/golang-api-test/models"
 	"github.com/guilhermeSenna/golang-api-test/utils"
 	"encoding/json"
+	"gorm.io/gorm"
 )
 
 
@@ -14,18 +16,27 @@
 	err := config.DB.Where("id = ?", c.Param("id")).First(&customer).Error
 
 	// Check if has generate an error with the query
-	if err != nil {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.JSON(404, "Customer not found!")
 		return
+	}else if err != nil {
+		c.JSON(500, "Unknown error")
+		return
 	}
-	
+
 	c.JSON(200, &customer) 
  }
 
  func GetCustomers(c *gin.Context){
 	customers := []models.Customers{}
 	// Limit to 50 users
-	config.DB.Limit(50).Find(&customers)
+	err := config.DB.Limit(50).Find(&customers).Error
+
+	if err != nil {
+		c.JSON(500, "Unknown error")
+		return
+	}
+
 	c.JSON(200, &customers)
  }
 
@@ -45,7 +56,13 @@
 	}
 
 	// Add to database
-	config.DB.Create(&customerFormatted)
+	err := config.DB.Create(&customerFormatted).Error
+
+	if err != nil {
+		c.JSON(500, "Unknown error")
+		return
+	}
+
 	c.JSON(201, customerFormatted)
  }
 
@@ -54,6 +71,18 @@
 	var customer models.Customers
 	decoder := json.NewDecoder(c.Request.Body)
 	decoder.Decode(&customer)
+
+	// Check if user exists
+	errCheckCustomer := config.DB.Where("id = ?", c.Param("id")).First(&customer).Error
+
+	// Check if has generate an error with the query
+	if errors.Is(errCheckCustomer, gorm.ErrRecordNotFound) {
+		c.JSON(404, "Customer not found!")
+		return
+	}else if errCheckCustomer != nil {
+		c.JSON(500, "Unknown error - check customer")
+		return
+	}
 
 	// Hash password
 	hashPassword, _ := utils.HashPassword(customer.Password)
@@ -65,7 +94,12 @@
 	}
 
 	// Update customer
-	config.DB.Where("id = ?", c.Param("id")).Updates(&customerFormatted)
+	errUpdateCustomer := config.DB.Where("id = ?", c.Param("id")).Updates(&customerFormatted).Error
+
+	if errUpdateCustomer != nil {
+		c.JSON(500, "Unknown error - update customer")
+		return
+	}
 
 	c.JSON(200, &customerFormatted)
  }
