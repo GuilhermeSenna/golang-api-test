@@ -18,8 +18,8 @@
 #### Used routes:
 
 - (GET) /customers - Get the first 50 customers
-- (GET) /customers/:id - Get a consumer's information by ID
-- (POST) /customers - Create a new consumer
+- (GET) /customers/:id - Get a customer's information by ID
+- (POST) /customers - Create a new customer
   - firstName (string)
   - lastName (string)
   - email (string)
