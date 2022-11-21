@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/guilhermeSenna/golang-api-test/config"
 	"github.com/guilhermeSenna/golang-api-test/routes"
+	"github.com/gin-contrib/cors"
 )
 
 func loadEnvPort() (string) {
@@ -24,6 +25,7 @@ func main() {
 	port := loadEnvPort()
 	router := gin.New()
 	config.Connect()
+	router.Use(cors.Default())
 	routes.Routes(router)
 	router.Run(":" + port)
 }
