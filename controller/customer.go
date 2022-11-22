@@ -68,12 +68,12 @@
 
  func UpdateCustomer(c *gin.Context){
 	// Get customer parameters
-	var customer models.Customers
+	var customer, checkCustomer models.Customers
 	decoder := json.NewDecoder(c.Request.Body)
 	decoder.Decode(&customer)
 
 	// Check if user exists
-	errCheckCustomer := config.DB.Where("id = ?", c.Param("id")).First(&customer).Error
+	errCheckCustomer := config.DB.Where("id = ?", c.Param("id")).First(&checkCustomer).Error
 
 	// Check if has generate an error with the query
 	if errors.Is(errCheckCustomer, gorm.ErrRecordNotFound) {
@@ -101,5 +101,32 @@
 		return
 	}
 
-	c.JSON(200, &customerFormatted)
+	c.JSON(200, "OK")
+ }
+
+ func DeleteCustomer(c *gin.Context){
+	// Get customer parameters
+	var customer models.Customers
+
+	// Check if user exists
+	errCheckCustomer := config.DB.Where("id = ?", c.Param("id")).First(&customer).Error
+
+	// Check if has generate an error with the query
+	if errors.Is(errCheckCustomer, gorm.ErrRecordNotFound) {
+		c.JSON(404, "Customer not found!")
+		return
+	}else if errCheckCustomer != nil {
+		c.JSON(500, "Unknown error - check customer")
+		return
+	}
+
+	// Update customer
+	errUpdateCustomer := config.DB.Where("id = ?", c.Param("id")).Delete(&customer).Error
+
+	if errUpdateCustomer != nil {
+		c.JSON(500, "Unknown error - delete customer")
+		return
+	}
+
+	c.JSON(200, "OK")
  }

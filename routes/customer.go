@@ -21,6 +21,9 @@ func Routes(router *gin.Engine) {
 
 		// Updates a customer
 		customersRoutes.PUT("/:id", controller.UpdateCustomer)
+
+		// Delete a customer
+		customersRoutes.DELETE("/:id", controller.DeleteCustomer)
 	}
 
 
